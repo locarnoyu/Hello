@@ -1,8 +1,8 @@
 #!/usr/bin/perl
 
 # Load our modules
-# Please note that you MUST have LWP::UserAgent and JSON installed to use this
-# You can get both from CPAN.
+# Please note that you MUST JSON installed to use this
+# You can get it from CPAN.
 use LWP::UserAgent;
 use JSON;
 use strict;
@@ -17,13 +17,22 @@ use Cwd;
 use POSIX('mktime');
 use File::Copy;
 
-# Initialize the UserAgent object and send the request.
-# Notice that referer is set manually to a URL string.
-#my $ua = LWP::UserAgent->new();
-#$ua->default_header("HTTP_REFERER" => "http://yahoo.com");
+# using curl to download search results
+# -k option to make sure  to support https protocol  
+#
+#
 
-my @array;
+# init
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime();
 
+printf("Time Format - HH:MM:SS\n");
+printf("%02d:%02d:%02d:%02d:%02d", $mon,$mday,$hour, $min, $sec);
+
+
+
+
+
+# find next file name that being used to store web page content
 sub nextfile ()
 {
     my $filename;
@@ -42,6 +51,8 @@ sub nextfile ()
     print "new filename = $filename \n";
     return $filename++;
 }
+
+# increase file name by one
 sub add_new ( $$)
 {
     my ($newfile, $newlink) = @_;
@@ -77,7 +88,8 @@ sub download ($)
 	}
 	if ($filename)
 	{
-       open FH, ">>$filename" or die "can't open '$filename': $!";
+	   my $page_name = $filename . ".html";
+       open FH, ">>$page_name" or die "can't open '$page_name': $!";
        print FH $page_content;
        close FH;
 	}
@@ -86,38 +98,54 @@ sub download ($)
 
 # collect top 100 google search results
 
-my $number_loop;
-my $i = 0;
-my $keyword="google%40nexus";
-for (my $number_loop=0; $number_loop <= 16; $number_loop++) {
-    sleep 60;
-    my $mul = $number_loop * 4;
-    my $cur_link = my $google_link = "\"http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=$keyword&start=$mul\"";
-	print "google link is = $cur_link \n";
-	my $page_content;
-	open my $fh,"curl -k $cur_link|";
-                {
-                        local $/;
-                        $page_content=<$fh>;
-                }
-                close $fh;
-		
+my @keywords=("HTC", "motorola","googlenexus","smartwatch");
+
+foreach ( @keywords)
+{
+	my $keyword = $_;
+	my $number_loop;
+	my $i = 0;
+
+	my @array;
+	for (my $number_loop=0; $number_loop <= 16; $number_loop++) {
+		sleep 60; # to avoid google abuse detect 
+		my $mul = $number_loop * 4;
+		my $cur_link = my $google_link = "\"http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=$keyword&start=$mul\"";
+		print "google link is = $cur_link \n";
+		my $page_content;
+		open my $fh,"curl -k $cur_link|";
+					{
+							local $/;
+							$page_content=<$fh>;
+					}
+					close $fh;
+			
 
 
-    my $json = decode_json($page_content);
-    # have some fun with the results
+		my $json = decode_json($page_content);
+		# have some fun with the results
 
-        foreach my $result (@{$json->{responseData}->{results}}){
-        $i++;
-        #print $i.". " . $result->{titleNoFormatting} . "(" . $result->{url} . ")\n";
-		print $result->{url} . "\n";
-		push (@array, $result->{url});
-        # etc....
-    }
-    if(!$i){
-           print "Sorry, but there were no results.\n";
-    }
+			foreach my $result (@{$json->{responseData}->{results}}){
+			$i++;
+			#print $i.". " . $result->{titleNoFormatting} . "(" . $result->{url} . ")\n";
+			print $result->{url} . "\n";
+			push (@array, $result->{url});
+		}
+		if(!$i){
+			   print "Sorry, but there were no results.\n";
+		}
+	}
+	# init version number
+	system ("cp version0.txt version.txt");
+
+	# download links
+	foreach (@array) {
+		download ($_);
+	} 
+
+	# move downloaded page to 
+	my $data_folder = $mon.$mday."_".$keyword;
+	system ( "mkdir $data_folder");
+	system ("mv *.html $data_folder");
+	system ("mv version.txt $data_folder");
 }
-foreach (@array) {
- 	download ($_);
-} 
