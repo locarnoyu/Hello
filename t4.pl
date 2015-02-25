@@ -81,9 +81,9 @@ sub download ($)
 	{
 		$filename = nextfile();
 		print "file name = $filename \n";
-		open( BUILDSFILE, "> $filename" ) || die "Cannot open $filename";
+		#open( BUILDSFILE, "> $filename" ) || die "Cannot open $filename";
 		#print  BUILDSFILE $page_content ;
-		close( BUILDSFILE );
+		#close( BUILDSFILE );
 		add_new ( $filename, $cur_link);
 	}
 	if ($filename)
@@ -98,7 +98,7 @@ sub download ($)
 
 # collect top 100 google search results
 
-my @keywords=("HTC", "motorola","googlenexus","smartwatch");
+my @keywords=("iphone","samsung","HTC", "motorola","googlenexus","smartwatch");
 
 foreach ( @keywords)
 {
