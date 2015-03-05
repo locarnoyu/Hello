@@ -21,7 +21,7 @@
 	    #print "$cwd \n";
 		opendir (DIR, ".") or die $!;
 		while (my $file = readdir(DIR)) {
-			if ($file eq "." or $file eq ".." or index($file, "txt") == -1))
+			if ($file eq "." or $file eq ".." or index($file, "txt") == -1)
 			{
 				next;
 			}
