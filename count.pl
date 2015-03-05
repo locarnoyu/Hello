@@ -12,17 +12,16 @@
 
     while (defined(my $directory = readdir $dh)) {
         next unless -d "$root/$directory";
-		print "path = $root/$directory \n";
+		#print "path = $root/$directory \n";
 		next if ($directory eq "." | $directory eq ".." | $directory eq ".git" | $directory eq "term_frequency_results");
 		my $sub_folder = $root. "\/" . $directory ;
-		print "sub = $sub_folder \n";
 		chdir $sub_folder;
 		#system ("cd $sub_folder");
 		my $cwd = getcwd();
-	    print "$cwd \n";
+	    #print "$cwd \n";
 		opendir (DIR, ".") or die $!;
 		while (my $file = readdir(DIR)) {
-			if ($file eq "." or $file eq "..")
+			if ($file eq "." or $file eq ".." or index($file, "txt") == -1))
 			{
 				next;
 			}

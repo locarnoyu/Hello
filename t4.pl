@@ -29,9 +29,6 @@ printf("Time Format - HH:MM:SS\n");
 printf("%02d:%02d:%02d:%02d:%02d", $mon,$mday,$hour, $min, $sec);
 
 
-
-
-
 # find next file name that being used to store web page content
 sub nextfile ()
 {
