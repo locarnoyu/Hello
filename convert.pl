@@ -21,24 +21,41 @@
 	    print "$cwd \n";
 		opendir (DIR, ".") or die $!;
 		while (my $file = readdir(DIR)) {
-			if ($file eq "." or $file eq "..")
+			if ($file eq "." or $file eq ".." or index($file, "txt") != -1 or index($file, "pl") != -1 or index($file, "log") != -1)
 			{
+				# converted file because file name include "txt"
 				next;
 			}
+			# check html file
             if (index($file, "html") != -1) {
-			    unless (-e $file)
+			    #print "html file $file \n";
+			    if (-e $file)
 				{
-					print "$file to convert \n";
 					my $orginal_file = $file;
 					$file =~ s/html/txt/g;
-					system ( "perl ..\/html2text.pl $orginal_file > $file ");  
+					if (-e $file)
+					{
+						#print "file $orginal_file already converted! 1 \n";
+						next;
+					}
+					else
+					{
+						print "$file to convert 1\n";
+						system ( "perl ..\/html2text.pl $orginal_file > $file ");  
+					}
 				}
 			}
-			if (index($file, "html") == -1 && index($file, "txt") == -1) {
-					print "$file to convert \n";
-					my $new_file = $file.".txt";
-					system ( "perl ..\/html2text.pl $file > $new_file ");  
-
+			else
+			{
+			   # old files that dont have .html extention
+				my $new_file = $file.".txt";
+				if (-e $new_file)
+				{
+					#print "file $file already converted! 2 \n";
+					next;
+				}
+                print "old $file to convert 2\n";					
+				system ( "perl ..\/html2text.pl $file > $new_file ");  
 		    }
 		}
 		chdir $root;

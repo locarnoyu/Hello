@@ -31,6 +31,7 @@
 				chomp $line;
 				$line =~ s/[\|\;\:\}\{\<\>\"\?\(\)\=\/\-\.\&\^\$\#\@\!\~\_\,\.\/\[\]\'\\\%\*\+]/ /g;
 				foreach my $str (split /\s+/, $line) {
+                    $str = lc $str;				
 					$count{$str}++;
 				}
 			}	
