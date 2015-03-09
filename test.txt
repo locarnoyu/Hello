@@ -1,9 +1,0 @@
-#adadad
-#include
-
-
-main ()
-{
-print "test \n"
-
-}
