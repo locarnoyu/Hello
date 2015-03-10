@@ -40,7 +40,7 @@
 					}
 					else
 					{
-						print "$file to convert 1\n";
+						print "$orginal_file to convert \n";
 						system ( "perl ..\/html2text.pl $orginal_file > $file ");  
 					}
 				}
