@@ -1,0 +1,12 @@
+perl file_size.pl 417_googlenexus googlenexus 417
+perl file_size.pl 417_HTC HTC 417
+perl file_size.pl 417_iphone iphone 417
+perl file_size.pl 417_motorola motorola 417
+perl file_size.pl 417_samsung samsung 417
+perl file_size.pl 417_smartwatch smartwatch 417
+perl folder_count.pl 417_googlenexus googlenexus 417
+perl folder_count.pl 417_HTC HTC 417
+perl folder_count.pl 417_iphone iphone 417
+perl folder_count.pl 417_motorola motorola 417
+perl folder_count.pl 417_samsung samsung 417
+perl folder_count.pl 417_smartwatch smartwatch 417
