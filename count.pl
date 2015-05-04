@@ -7,6 +7,11 @@ use strict;
 use warnings;
 use Cwd;
 use List::MoreUtils 'any';
+use DBI;
+
+my $dbh = DBI->connect("DBI:mysql:database=research;host=localhost",
+                         "wyu", "q1w2..AS",
+                         {'RaiseError' => 1});
 
 	
 my %count;
@@ -18,6 +23,7 @@ sub filter ($)
     my @filter1 = ("the","and","false","com","var","function","for","true","this","http","with","data","you","that","class","https","document","url","text");
     my @filter2 = ("your","div","new","jpg","2015","type","name","window","more","time","null","all","image","from","images","title","jquery","width","src","www");
     my @filter3 = ("2014","return","are","not","will","top","href","u003c","net","but","can","product","value","has","have","its","see","page","span","else","post");
+	my @filter4 = ("link","was","now","html","out","font","also","attr","when","css","what","php","other","which","only","how","typeof","febrary","most","than","files");
 
     $match_found = grep(/^$word/i, @filter1);
     if ( $match_found == 0 )
@@ -27,6 +33,10 @@ sub filter ($)
     if ( $match_found == 0)
     {
         $match_found = grep(/^$word/i, @filter3)
+    }
+	if ( $match_found == 0)
+    {
+        $match_found = grep(/^$word/i, @filter4)
     }
     return $match_found ;
 }
@@ -46,9 +56,10 @@ while (defined(my $directory = readdir $dh)) {
     while (my $file = readdir(DIR)) {
         if ($file eq "." or $file eq ".." or index($file, "txt") == -1)
         {
+			#print "$file is not a txt file, pass \n";
             next;
         }
-        open my $fh, '<', $file or die "Could not open '$file' $!";
+        open my $fh, '<', $file or die "Could nLAC + 6.5 > OKCot open '$file' $!";
         while (my $line = <$fh>) {
             chomp $line;
             #replace special characters with space " ".
@@ -70,7 +81,8 @@ foreach my $name (sort { $count{$a} <=> $count{$b} } keys %count) {
         if ( $return == 0)
         {
             # print only the words that show more than certain number times 
-            printf "\"%-8s\" %s %s|\n", $name, $total,$return if ($total > 200);
+            printf "%-8s %s \n", $name, $total if ($total > 200);
+			#$dbh->do("INSERT INTO term_frequency VALUES ("key_word","term","frequency","date"));
         }
     }
 }
